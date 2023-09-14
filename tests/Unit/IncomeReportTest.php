@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class IncomeReportTest extends TestCase
 {
@@ -9,7 +9,7 @@ class IncomeReportTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)->json('GET', '/api/reports/income-report?start_date=2021-01-01&end_date='.date('Y-m-d'));
+        $this->actingAs($user)->json('GET', '/api/reports/income-report?start_date=2021-01-01&end_date=' . date('Y-m-d'));
 
         $this->assertResponseOk();
     }

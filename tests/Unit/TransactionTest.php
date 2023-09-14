@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\Table;
 use App\Models\Transaction;
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class TransactionTest extends TestCase
 {
@@ -19,8 +19,8 @@ class TransactionTest extends TestCase
 
         $this->actingAs($user)
             ->json('GET', '/api/transactions')
-            ->seeStatusCode(200)
-            ->seeJsonStructure([
+            ->assertStatus(200)
+            ->assertJsonStructure([
                 'data' => [
                     'current_page',
                     'data' => [],
@@ -71,7 +71,7 @@ class TransactionTest extends TestCase
 
         $this->assertResponseStatus(201);
 
-        $this->seeJsonStructure([
+        $this->assertJsonStructure([
             'data' => [
                 'user_id',
                 'table_id',
@@ -97,11 +97,11 @@ class TransactionTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->actingAs($user)->json('GET', '/api/transactions/'.$transaction->invoice);
+        $this->actingAs($user)->json('GET', '/api/transactions/' . $transaction->invoice);
 
         $this->assertResponseOk();
 
-        $this->seeJsonStructure([
+        $this->assertJsonStructure([
             'data' => [
                 'user_id',
                 'table_id',
@@ -164,7 +164,7 @@ class TransactionTest extends TestCase
             'role' => 'kasir',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/transactions/'.$transaction->invoice, $update);
+        $this->actingAs($user)->json('PUT', '/api/transactions/' . $transaction->invoice, $update);
 
         // Then
         $this->assertResponseOk();

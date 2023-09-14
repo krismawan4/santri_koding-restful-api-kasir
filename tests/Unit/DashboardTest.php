@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {
@@ -11,8 +11,8 @@ class DashboardTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)->json('GET', '/api/dashboard')
-            ->seeStatusCode(200)
-            ->seeJsonStructure([
+            ->assertStatus(200)
+            ->assertJsonStructure([
                 'data' => [
                     'best_selling' => [],
                     'low_quantity' => [],

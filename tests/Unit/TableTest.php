@@ -3,7 +3,7 @@
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class TableTest extends TestCase
 {
@@ -54,7 +54,7 @@ class TableTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->json('GET', '/api/tables/'.$table->id);
+            ->json('GET', '/api/tables/' . $table->id);
 
         // Then
         $this->assertResponseOk();
@@ -121,15 +121,15 @@ class TableTest extends TestCase
 
         // When
         $newTable = [
-            'name' => $table->name.'_updated',
-            'slug' => Str::slug($table->name.'_updated'),
+            'name' => $table->name . '_updated',
+            'slug' => Str::slug($table->name . '_updated'),
         ];
 
         $user = User::factory()->create([
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/tables/'.$table->id, $newTable);
+        $this->actingAs($user)->json('PUT', '/api/tables/' . $table->id, $newTable);
 
         // Then
         $this->assertResponseOk();
@@ -179,7 +179,7 @@ class TableTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('DELETE', '/api/tables/'.$table->id);
+        $this->actingAs($user)->json('DELETE', '/api/tables/' . $table->id);
         // Then
         $this->assertResponseOk();
 
@@ -205,7 +205,7 @@ class TableTest extends TestCase
         self::assertSame(3, Table::all()->count());
 
         // Then
-        $this->seeJsonStructure([
+        $this->assertJsonStructure([
             'data' => [
                 'current_page',
                 'data' => [],

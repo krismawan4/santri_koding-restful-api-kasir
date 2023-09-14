@@ -3,7 +3,7 @@
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class CategoryTest extends TestCase
 {
@@ -18,8 +18,8 @@ class CategoryTest extends TestCase
 
         $this->actingAs($user)
             ->json('GET', '/api/categories')
-            ->seeStatusCode(200)
-            ->seeJsonStructure([
+            ->assertStatus(200)
+            ->assertJsonStructure([
                 'data' => [
                     'current_page',
                     'data' => [],
@@ -91,7 +91,7 @@ class CategoryTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->actingAs($user)->json('GET', '/api/categories/'.$category->id);
+        $this->actingAs($user)->json('GET', '/api/categories/' . $category->id);
 
         $this->assertResponseOk();
 
@@ -114,15 +114,15 @@ class CategoryTest extends TestCase
         $category = Category::factory()->create();
 
         $newCategory = [
-            'name' => $category->name.'_updated',
-            'slug' => Str::slug($category->name.'-updated'),
+            'name' => $category->name . '_updated',
+            'slug' => Str::slug($category->name . '-updated'),
         ];
 
         $user = User::factory()->create([
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/categories/'.$category->id, $newCategory);
+        $this->actingAs($user)->json('PUT', '/api/categories/' . $category->id, $newCategory);
 
         $this->assertResponseOk();
 
@@ -191,7 +191,7 @@ class CategoryTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('DELETE', '/api/categories/'.$category->id);
+        $this->actingAs($user)->json('DELETE', '/api/categories/' . $category->id);
         // Then
         $this->assertResponseOk();
 

@@ -4,7 +4,7 @@ use App\Models\Category;
 use App\Models\Item;
 use App\Models\User;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ItemTest extends TestCase
 {
@@ -19,8 +19,8 @@ class ItemTest extends TestCase
 
         $this->actingAs($user)
             ->json('GET', '/api/items')
-            ->seeStatusCode(200)
-            ->seeJsonStructure([
+            ->assertStatus(200)
+            ->assertJsonStructure([
                 'data' => [
                     'current_page',
                     'data' => [],
@@ -95,7 +95,7 @@ class ItemTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->json('GET', '/api/items/'.$item->id);
+            ->json('GET', '/api/items/' . $item->id);
 
         $this->assertResponseOk();
 
@@ -143,18 +143,18 @@ class ItemTest extends TestCase
         $newItem = [
             'category_id' => $item->category_id,
             'barcode' => $item->barcode,
-            'name' => $item->name.'_updated',
-            'description' => $item->description.'_updated',
+            'name' => $item->name . '_updated',
+            'description' => $item->description . '_updated',
             'price' => $item->price,
             'quantity' => $item->quantity,
-            'slug' => Str::slug($item->name.'-updated'),
+            'slug' => Str::slug($item->name . '-updated'),
         ];
 
         $user = User::factory()->create([
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/items/'.$item->id, $newItem);
+        $this->actingAs($user)->json('PUT', '/api/items/' . $item->id, $newItem);
 
         $this->assertResponseOk();
 
@@ -177,8 +177,8 @@ class ItemTest extends TestCase
         $this->actingAs($user)->json('PUT', '/api/items/999', [
             'category_id' => $category->id,
             'barcode' => $item->barcode,
-            'name' => $item->name.'_updated',
-            'description' => $item->description.'_updated',
+            'name' => $item->name . '_updated',
+            'description' => $item->description . '_updated',
             'price' => $item->price,
             'quantity' => $item->quantity,
         ]);
@@ -201,7 +201,7 @@ class ItemTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('DELETE', '/api/items/'.$item->id);
+        $this->actingAs($user)->json('DELETE', '/api/items/' . $item->id);
 
         $this->assertResponseOk();
 
