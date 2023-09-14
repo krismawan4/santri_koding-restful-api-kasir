@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 use App\Utils\JsonResponse;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
@@ -17,7 +16,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (!auth()->attempt($credentials)) {
+        if (! auth()->attempt($credentials)) {
             return response()->json(new JsonResponse(
                 'Login Gagal',
                 [],
@@ -33,7 +32,7 @@ class AuthController extends Controller
                 'user' => auth()->user(),
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => config('sanctum.expiration')
+                'expires_in' => config('sanctum.expiration'),
             ]
         ), Response::HTTP_OK);
     }
@@ -65,5 +64,4 @@ class AuthController extends Controller
             []
         ), Response::HTTP_OK);
     }
-
 }

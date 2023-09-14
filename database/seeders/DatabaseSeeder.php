@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         if ($this->command->confirm('Apakah anda ingin me-refresh migration sebelum menjalankan seeder, ini akan menghapus data lama ?')) {
             // Call the php artisan migrate:fresh using Artisan
             $this->command->call('migrate:fresh');
-            $this->command->line("Sukses refresh Database");
+            $this->command->line('Sukses refresh Database');
         }
 
         $this->call(UserSeeder::class);

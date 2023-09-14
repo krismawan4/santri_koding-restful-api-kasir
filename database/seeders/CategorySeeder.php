@@ -13,7 +13,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $count = (int)$this->command->ask('Mau generate berapa kategori?', 5);
+        $count = (int) $this->command->ask('Mau generate berapa kategori?', 5);
 
         $this->command->info("{$count} kategori.");
 
@@ -25,7 +25,7 @@ class CategorySeeder extends Seeder
 
         \App\Models\Category::all()->each(function ($category) use ($faker) {
             $category->image()->create([
-                'url' => $faker->imageUrl(360, 360, 'animals', true, 'cats')
+                'url' => $faker->imageUrl(360, 360, 'animals', true, 'cats'),
             ]);
         });
 

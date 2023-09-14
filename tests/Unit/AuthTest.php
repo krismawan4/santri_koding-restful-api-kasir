@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use PHPUnit\Framework\TestCase;
 
 class AuthTest extends TestCase
 {
@@ -10,7 +11,7 @@ class AuthTest extends TestCase
 
         $this->json('POST', '/api/auth/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ])
             ->seeStatusCode(200)
             ->seeJsonStructure([
@@ -21,13 +22,13 @@ class AuthTest extends TestCase
                         'email',
                         'role',
                         'created_at',
-                        'updated_at'
+                        'updated_at',
                     ],
                     'access_token',
                     'token_type',
-                    'expires_in'
+                    'expires_in',
                 ],
-                'error'
+                'error',
             ]);
     }
 
@@ -37,17 +38,17 @@ class AuthTest extends TestCase
 
         $this->json('POST', '/api/auth/login', [
             'email' => $user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ])
             ->seeStatusCode(401)
             ->seeJson([
-                'message' => 'Login Gagal'
+                'message' => 'Login Gagal',
             ])
             ->seeJsonStructure([
                 'success',
                 'message',
                 'data',
-                'error'
+                'error',
             ]);
     }
 }

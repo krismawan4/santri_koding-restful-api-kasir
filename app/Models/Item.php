@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Models\Concerns\Searchable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Item extends Model
@@ -32,8 +32,9 @@ class Item extends Model
     public function getImageUrlAttribute()
     {
         $url = '';
-        if (strlen($this->image) > 5)
-            $url = url('images/' . $this->image->url);
+        if (strlen($this->image) > 5) {
+            $url = url('images/'.$this->image->url);
+        }
 
         return $url;
     }

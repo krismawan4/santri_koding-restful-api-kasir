@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
 use App\Models\Concerns\Searchable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -37,8 +37,9 @@ class Category extends Model
     public function getImageUrlAttribute()
     {
         $url = '';
-        if (strlen($this->image) > 5)
-            $url = url('images/' . $this->image->url);
+        if (strlen($this->image) > 5) {
+            $url = url('images/'.$this->image->url);
+        }
 
         return $url;
     }

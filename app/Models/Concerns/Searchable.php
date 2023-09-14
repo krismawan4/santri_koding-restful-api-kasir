@@ -2,22 +2,22 @@
 
 namespace App\Models\Concerns;
 
-use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 trait Searchable
 {
     /**
      * Scope a query to search for a term in the attributes
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function scopeSearch($query)
     {
         [$searchTerm, $attributes] = $this->parseArguments(func_get_args());
 
-        if (!$searchTerm || !$attributes) {
+        if (! $searchTerm || ! $attributes) {
             return $query;
         }
 
@@ -43,7 +43,6 @@ trait Searchable
     /**
      * Parse search scope arguments
      *
-     * @param array $arguments
      * @return array
      */
     private function parseArguments(array $arguments)

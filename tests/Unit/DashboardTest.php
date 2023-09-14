@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use PHPUnit\Framework\TestCase;
 
 class DashboardTest extends TestCase
 {
@@ -14,9 +15,9 @@ class DashboardTest extends TestCase
             ->seeJsonStructure([
                 'data' => [
                     'best_selling' => [],
-                    'low_quantity' => []
+                    'low_quantity' => [],
                 ],
-                'error'
+                'error',
             ]);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Transaction;
 use App\Models\Item;
-use Illuminate\Http\Response;
+use App\Models\Transaction;
 use App\Utils\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
@@ -28,6 +28,7 @@ class TransactionController extends Controller
             $transactions = $transactions->search($keyword);
         }
         $transactions = $transactions->paginate(10);
+
         return response()->json(new JsonResponse(
             'Data Semua Transaksi',
             $transactions
@@ -85,6 +86,7 @@ class TransactionController extends Controller
             }
             // all good
             DB::commit();
+
             //return successful response
             return response()->json(new JsonResponse(
                 'Pembuatan Item Berhasil',
@@ -93,6 +95,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             // something went wrong
             DB::rollBack();
+
             //return error message
             return response()->json(new JsonResponse(
                 'Pembuatan Item Gagal',
@@ -107,7 +110,7 @@ class TransactionController extends Controller
         $transaction = $this->repo
             ->with('details.items')
             ->firstWhere('invoice', $invoice);
-        if (!$transaction) {
+        if (! $transaction) {
             //return error message
             return response()->json(new JsonResponse(
                 'Data Transaksi tidak ditemukan',
@@ -115,6 +118,7 @@ class TransactionController extends Controller
                 'show_error'
             ), Response::HTTP_BAD_REQUEST);
         }
+
         //return successful response
         return response()->json(new JsonResponse(
             'Show Transaksi Berhasil',
@@ -185,6 +189,7 @@ class TransactionController extends Controller
             }
             // all good
             DB::commit();
+
             //return successful response
             return response()->json(new JsonResponse(
                 'Perubahan Transaksi Berhasil',
@@ -193,6 +198,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             // something went wrong
             DB::rollBack();
+
             //return error message
             return response()->json(new JsonResponse(
                 'Perubahan Transaksi Gagal',
@@ -205,7 +211,7 @@ class TransactionController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $data = $this->validate($request, [
-            'status' => 'required|in:success'
+            'status' => 'required|in:success',
         ]);
 
         DB::beginTransaction();
@@ -213,7 +219,7 @@ class TransactionController extends Controller
         try {
             $status = $request->status;
             $data = [
-                'status' => $status
+                'status' => $status,
             ];
             $update = $this->repo->findOrFail($id);
             $update->fill($data);
@@ -226,6 +232,7 @@ class TransactionController extends Controller
             }
             // all good
             DB::commit();
+
             //return successful response
             return response()->json(new JsonResponse(
                 'Perubahan Status Transaksi Berhasil',
@@ -234,6 +241,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             // something went wrong
             DB::rollBack();
+
             //return error message
             return response()->json(new JsonResponse(
                 'Perubahan Status Transaksi Gagal',
@@ -249,7 +257,7 @@ class TransactionController extends Controller
 
         try {
             $delete = $this->repo->find($id);
-            if (!$delete) {
+            if (! $delete) {
                 //return error message
                 return response()->json(new JsonResponse(
                     'Data Transaksi tidak ditemukan',
@@ -277,6 +285,7 @@ class TransactionController extends Controller
             $delete->delete();
             // all good
             DB::commit();
+
             //return successful response
             return response()->json(new JsonResponse(
                 'Hapus Transaksi Berhasil',
@@ -285,6 +294,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             // something went wrong
             DB::rollBack();
+
             //return error message
             return response()->json(new JsonResponse(
                 'Terjadi masalah',

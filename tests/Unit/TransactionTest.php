@@ -4,6 +4,7 @@ use App\Models\Item;
 use App\Models\Table;
 use App\Models\Transaction;
 use App\Models\User;
+use PHPUnit\Framework\TestCase;
 
 class TransactionTest extends TestCase
 {
@@ -33,9 +34,9 @@ class TransactionTest extends TestCase
                     'per_page',
                     'prev_page_url',
                     'to',
-                    'total'
+                    'total',
                 ],
-                'error'
+                'error',
             ]);
     }
 
@@ -48,7 +49,7 @@ class TransactionTest extends TestCase
         $item = Item::factory()->create();
 
         $user = User::factory()->create([
-            'role' => 'kasir'
+            'role' => 'kasir',
         ]);
 
         $this->actingAs($user)->json('POST', '/api/transactions', [
@@ -58,13 +59,13 @@ class TransactionTest extends TestCase
             'change' => 0,
             'status' => 'success',
             'item_id' => [
-                0 => $item->id
+                0 => $item->id,
             ],
             'quantity' => [
-                0 => 4
+                0 => 4,
             ],
             'price' => [
-                0 => 50000
+                0 => 50000,
             ],
         ]);
 
@@ -81,9 +82,9 @@ class TransactionTest extends TestCase
                 'invoice',
                 'updated_at',
                 'created_at',
-                'id'
+                'id',
             ],
-            'error'
+            'error',
         ]);
     }
 
@@ -96,7 +97,7 @@ class TransactionTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->actingAs($user)->json('GET', '/api/transactions/' . $transaction->invoice);
+        $this->actingAs($user)->json('GET', '/api/transactions/'.$transaction->invoice);
 
         $this->assertResponseOk();
 
@@ -111,9 +112,9 @@ class TransactionTest extends TestCase
                 'invoice',
                 'updated_at',
                 'created_at',
-                'id'
+                'id',
             ],
-            'error'
+            'error',
         ]);
     }
 
@@ -149,21 +150,21 @@ class TransactionTest extends TestCase
             'change' => 0,
             'status' => 'success',
             'item_id' => [
-                0 => $item->id
+                0 => $item->id,
             ],
             'quantity' => [
-                0 => 4
+                0 => 4,
             ],
             'price' => [
-                0 => 50000
+                0 => 50000,
             ],
         ];
 
         $user = User::factory()->create([
-            'role' => 'kasir'
+            'role' => 'kasir',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/transactions/' . $transaction->invoice, $update);
+        $this->actingAs($user)->json('PUT', '/api/transactions/'.$transaction->invoice, $update);
 
         // Then
         $this->assertResponseOk();

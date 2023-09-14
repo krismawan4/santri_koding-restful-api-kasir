@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Category;
-use Illuminate\Http\Response;
 use App\Utils\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
@@ -44,7 +44,7 @@ class CategoryController extends Controller
         try {
             $data = [
                 'name' => $request->name,
-                'slug' => $request->name
+                'slug' => $request->name,
             ];
             $store = $this->repo->create($data);
 
@@ -53,7 +53,7 @@ class CategoryController extends Controller
                 $imageName = $image->hashName();
 
                 $store->image()->create([
-                    'url' => $imageName
+                    'url' => $imageName,
                 ]);
 
                 $image->move(storage_path('images'), $imageName);
@@ -77,7 +77,7 @@ class CategoryController extends Controller
     public function show(int $id)
     {
         $category = $this->repo->with('image.imageable')->find($id);
-        if (!$category) {
+        if (! $category) {
             //return error message
             return response()->json(new JsonResponse(
                 'Data Kategori tidak ditemukan',
@@ -85,6 +85,7 @@ class CategoryController extends Controller
                 'show_error'
             ), Response::HTTP_NOT_FOUND);
         }
+
         //return successful response
         return response()->json(new JsonResponse(
             'Show Kategori Berhasil',
@@ -96,13 +97,13 @@ class CategoryController extends Controller
     {
         //validate incoming request
         $data = $this->validate($request, [
-            'name' => 'required|max:255'
+            'name' => 'required|max:255',
         ]);
 
         try {
             $data = [
                 'name' => $request->name,
-                'slug' => $request->name
+                'slug' => $request->name,
             ];
             $update = $this->repo->findOrFail($id);
             $update->fill($data);
@@ -113,11 +114,11 @@ class CategoryController extends Controller
                 $imageName = $image->hashName();
 
                 $oldImage = $update->image->url;
-                $filePath = storage_path('images') . '/' . $oldImage;
+                $filePath = storage_path('images').'/'.$oldImage;
                 unlink($filePath);
 
                 $update->image()->update([
-                    'url' => $imageName
+                    'url' => $imageName,
                 ]);
 
                 $image->move(storage_path('images'), $imageName);
@@ -142,7 +143,7 @@ class CategoryController extends Controller
     {
         try {
             $delete = $this->repo->find($id);
-            if (!$delete) {
+            if (! $delete) {
                 //return error message
                 return response()->json(new JsonResponse(
                     'Data kategori tidak ditemukan',
@@ -153,12 +154,13 @@ class CategoryController extends Controller
 
             if ($delete->image) {
                 $image = $delete->image->url;
-                $filePath = storage_path('images') . '/' . $image;
+                $filePath = storage_path('images').'/'.$image;
                 unlink($filePath);
 
                 $delete->image()->delete();
             }
             $delete->delete();
+
             //return successful response
             return response()->json(new JsonResponse(
                 'Hapus Kategori Berhasil',

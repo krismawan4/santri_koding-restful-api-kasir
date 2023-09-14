@@ -3,10 +3,10 @@
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\TestCase;
 
 class CategoryTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -33,9 +33,9 @@ class CategoryTest extends TestCase
                     'per_page',
                     'prev_page_url',
                     'to',
-                    'total'
+                    'total',
                 ],
-                'error'
+                'error',
             ]);
     }
 
@@ -47,23 +47,23 @@ class CategoryTest extends TestCase
         $category = Category::factory()->make();
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('POST', '/api/categories', [
-            'name' => $category->name
+            'name' => $category->name,
         ]);
 
         $this->assertResponseStatus(201);
 
         $this->seeJsonContains([
-            'name'  => $category->name,
-            'slug'  => $category->slug
+            'name' => $category->name,
+            'slug' => $category->slug,
         ]);
 
         $this->seeInDatabase('categories', [
-            'name'  => $category->name,
-            'slug'  => $category->slug,
+            'name' => $category->name,
+            'slug' => $category->slug,
         ]);
     }
 
@@ -91,18 +91,18 @@ class CategoryTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->actingAs($user)->json('GET', '/api/categories/' . $category->id);
+        $this->actingAs($user)->json('GET', '/api/categories/'.$category->id);
 
         $this->assertResponseOk();
 
         $this->seeInDatabase('categories', [
-            'name'  => $category->name,
-            'slug'  => $category->slug
+            'name' => $category->name,
+            'slug' => $category->slug,
         ]);
 
         $this->seeJsonContains([
-            'name'  => $category->name,
-            'slug'  => $category->slug
+            'name' => $category->name,
+            'slug' => $category->slug,
         ]);
     }
 
@@ -114,15 +114,15 @@ class CategoryTest extends TestCase
         $category = Category::factory()->create();
 
         $newCategory = [
-            'name'  => $category->name . '_updated',
-            'slug'  => Str::slug($category->name . '-updated'),
+            'name' => $category->name.'_updated',
+            'slug' => Str::slug($category->name.'-updated'),
         ];
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/categories/' .$category->id, $newCategory);
+        $this->actingAs($user)->json('PUT', '/api/categories/'.$category->id, $newCategory);
 
         $this->assertResponseOk();
 
@@ -146,17 +146,17 @@ class CategoryTest extends TestCase
         // Given no category
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('PUT', '/api/categories/999', [
-            'name' => 'OK updated'
+            'name' => 'OK updated',
         ]);
 
         $this->assertResponseStatus(500);
 
         $this->seeJson([
-            'error' => 'update_error'
+            'error' => 'update_error',
         ]);
     }
 
@@ -168,14 +168,14 @@ class CategoryTest extends TestCase
         // Given
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('DELETE', '/api/categories/999');
         // Then
         $this->assertResponseStatus(404);
         $this->seeJson([
-            'error' => 'delete_error'
+            'error' => 'delete_error',
         ]);
     }
 
@@ -188,10 +188,10 @@ class CategoryTest extends TestCase
         $category = Category::factory()->create();
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('DELETE', '/api/categories/' . $category->id);
+        $this->actingAs($user)->json('DELETE', '/api/categories/'.$category->id);
         // Then
         $this->assertResponseOk();
 

@@ -1,15 +1,16 @@
 <?php
 
-use App\Models\Item;
 use App\Models\Category;
+use App\Models\Item;
 use App\Models\User;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\TestCase;
 
 class ItemTest extends TestCase
 {
     /**
-    * @test
-    */
+     * @test
+     */
     public function can_return_a_collection_of_paginated_items(): void
     {
         Item::factory()->count(5)->create();
@@ -33,9 +34,9 @@ class ItemTest extends TestCase
                     'per_page',
                     'prev_page_url',
                     'to',
-                    'total'
+                    'total',
                 ],
-                'error'
+                'error',
             ]);
     }
 
@@ -46,11 +47,11 @@ class ItemTest extends TestCase
     {
         $category = Category::factory()->create();
         $item = Item::factory()->make([
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)
@@ -60,7 +61,7 @@ class ItemTest extends TestCase
                 'barcode' => $item->barcode,
                 'description' => $item->description,
                 'price' => $item->price,
-                'quantity' => $item->quantity
+                'quantity' => $item->quantity,
             ]);
 
         $this->assertResponseStatus(201);
@@ -71,7 +72,7 @@ class ItemTest extends TestCase
             'name' => $item->name,
             'description' => $item->description,
             'price' => $item->price,
-            'quantity' => $item->quantity
+            'quantity' => $item->quantity,
         ]);
 
         $this->seeInDatabase('items', [
@@ -80,7 +81,7 @@ class ItemTest extends TestCase
             'name' => $item->name,
             'description' => $item->description,
             'price' => $item->price,
-            'quantity' => $item->quantity
+            'quantity' => $item->quantity,
         ]);
     }
 
@@ -94,7 +95,7 @@ class ItemTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->json('GET', '/api/items/' . $item->id);
+            ->json('GET', '/api/items/'.$item->id);
 
         $this->assertResponseOk();
 
@@ -110,7 +111,7 @@ class ItemTest extends TestCase
             'name' => $item->name,
             'description' => $item->description,
             'price' => (string) $item->price,
-            'quantity' => (string) $item->quantity
+            'quantity' => (string) $item->quantity,
         ]);
     }
 
@@ -136,24 +137,24 @@ class ItemTest extends TestCase
     {
         $category = Category::factory()->create();
         $item = Item::factory()->create([
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
 
         $newItem = [
             'category_id' => $item->category_id,
             'barcode' => $item->barcode,
-            'name'  => $item->name . '_updated',
-            'description' =>  $item->description . '_updated',
+            'name' => $item->name.'_updated',
+            'description' => $item->description.'_updated',
             'price' => $item->price,
             'quantity' => $item->quantity,
-            'slug'  => Str::slug($item->name . '-updated'),
+            'slug' => Str::slug($item->name.'-updated'),
         ];
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/items/' . $item->id, $newItem);
+        $this->actingAs($user)->json('PUT', '/api/items/'.$item->id, $newItem);
 
         $this->assertResponseOk();
 
@@ -170,22 +171,22 @@ class ItemTest extends TestCase
         // Given no item
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('PUT', '/api/items/999', [
             'category_id' => $category->id,
             'barcode' => $item->barcode,
-            'name'  => $item->name . '_updated',
-            'description' =>  $item->description . '_updated',
+            'name' => $item->name.'_updated',
+            'description' => $item->description.'_updated',
             'price' => $item->price,
-            'quantity' => $item->quantity
+            'quantity' => $item->quantity,
         ]);
 
         $this->assertResponseStatus(500);
 
         $this->seeJson([
-            'error' => 'update_error'
+            'error' => 'update_error',
         ]);
     }
 
@@ -197,10 +198,10 @@ class ItemTest extends TestCase
         $item = Item::factory()->create();
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('DELETE', '/api/items/' . $item->id);
+        $this->actingAs($user)->json('DELETE', '/api/items/'.$item->id);
 
         $this->assertResponseOk();
 
@@ -217,14 +218,14 @@ class ItemTest extends TestCase
         // Given
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('DELETE', '/api/items/999');
         // Then
         $this->assertResponseStatus(404);
         $this->seeJson([
-            'error' => 'delete_error'
+            'error' => 'delete_error',
         ]);
     }
 }

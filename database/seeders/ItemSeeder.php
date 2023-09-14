@@ -21,7 +21,7 @@ class ItemSeeder extends Seeder
 
         \App\Models\Item::all()->each(function ($item) use ($faker) {
             $item->image()->create([
-                'url' => $faker->imageUrl(360, 360, 'animals', true, 'cats')
+                'url' => $faker->imageUrl(360, 360, 'animals', true, 'cats'),
             ]);
         });
     }

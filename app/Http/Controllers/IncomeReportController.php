@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Utils\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Utils\JsonResponse;
 
 class IncomeReportController extends Controller
 {
-
     protected $repo;
 
     public function __construct(Transaction $repo)

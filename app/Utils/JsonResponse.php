@@ -8,6 +8,7 @@ use Illuminate\Contracts\Support\Jsonable;
 class JsonResponse implements \JsonSerializable
 {
     const STATUS_SUCCESS = true;
+
     const STATUS_ERROR = false;
 
     private $message = '';
@@ -26,7 +27,7 @@ class JsonResponse implements \JsonSerializable
 
         $this->message = $message;
         $this->error = $error;
-        $this->success = !empty($data);
+        $this->success = ! empty($data);
     }
 
     public function success($data = [])

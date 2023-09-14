@@ -30,7 +30,7 @@ class DashboardController extends Controller
             'Data Dashboard',
             [
                 'best_selling' => $bestSelling,
-                'low_quantity' => $lowItems
+                'low_quantity' => $lowItems,
             ]
         ), Response::HTTP_OK);
     }

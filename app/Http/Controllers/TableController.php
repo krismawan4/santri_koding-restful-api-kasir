@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Table;
-use Illuminate\Http\Response;
 use App\Utils\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TableController extends Controller
 {
@@ -36,13 +36,13 @@ class TableController extends Controller
     {
         //validate incoming request
         $data = $this->validate($request, [
-            'name' => 'required|max:255|unique:tables'
+            'name' => 'required|max:255|unique:tables',
         ]);
 
         try {
             $data = [
                 'name' => $request->name,
-                'slug' => $request->name
+                'slug' => $request->name,
             ];
             $store = $this->repo->create($data);
 
@@ -64,7 +64,7 @@ class TableController extends Controller
     public function show(int $id)
     {
         $table = $this->repo->find($id);
-        if (!$table) {
+        if (! $table) {
             //return error message
             return response()->json(new JsonResponse(
                 'Data Meja tidak ditemukan',
@@ -72,6 +72,7 @@ class TableController extends Controller
                 'show_error'
             ), Response::HTTP_NOT_FOUND);
         }
+
         //return successful response
         return response()->json(new JsonResponse(
             'Show Meja Berhasil',
@@ -83,13 +84,13 @@ class TableController extends Controller
     {
         //validate incoming request
         $data = $this->validate($request, [
-            'name' => 'required|max:255'
+            'name' => 'required|max:255',
         ]);
 
         try {
             $data = [
                 'name' => $request->name,
-                'slug' => $request->name
+                'slug' => $request->name,
             ];
             $update = $this->repo->findOrFail($id);
             $update->fill($data);
@@ -114,7 +115,7 @@ class TableController extends Controller
     {
         try {
             $delete = $this->repo->find($id);
-            if (!$delete) {
+            if (! $delete) {
                 //return error message
                 return response()->json(new JsonResponse(
                     'Data Meja tidak ditemukan',

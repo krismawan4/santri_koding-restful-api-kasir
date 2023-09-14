@@ -11,9 +11,10 @@ class TransactionFactory extends Factory
 
     public function definition(): array
     {
-        $total = random_int(100000, 999999);;
+        $total = random_int(100000, 999999);
         $pay = ($total + 10000);
         $status = ['pending', 'success'];
+
         return [
             'user_id' => rand(1, 2),
             'table_id' => rand(1, 2),

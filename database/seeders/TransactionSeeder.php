@@ -20,7 +20,7 @@ class TransactionSeeder extends Seeder
             ->create();
 
         $details = [];
-        \App\Models\Transaction::all()->each(function ($transaction) use ($faker, $details) {
+        \App\Models\Transaction::all()->each(function ($transaction) use ($details) {
             $item_id = rand(1, 5);
             $item = \App\Models\Item::find($item_id);
             $quantity = rand(1, 5);
@@ -30,7 +30,7 @@ class TransactionSeeder extends Seeder
                 'item_id' => $item->id,
                 'quantity' => $quantity,
                 'price' => $price,
-                'subtotal' => $subtotal
+                'subtotal' => $subtotal,
             ];
             $transaction->details()->createMany($details);
         });

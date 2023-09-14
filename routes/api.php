@@ -36,7 +36,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/transactions', 'index');
             Route::get('/transactions/{id}', 'show');
         });
-        Route::get('/dashboard',DashboardController::class);
+        Route::get('/dashboard', DashboardController::class);
         Route::get('reports/income-report', IncomeReportController::class);
     });
 

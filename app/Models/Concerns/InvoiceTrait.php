@@ -20,7 +20,7 @@ trait InvoiceTrait
             if ($record) {
                 $nextInvoiceNumber = ($record->id + 1);
             }
-            $invoice->invoice = $current_prefix . '-' . str_pad(
+            $invoice->invoice = $current_prefix.'-'.str_pad(
                 $nextInvoiceNumber,
                 5, // as per your requirement.
                 '0',

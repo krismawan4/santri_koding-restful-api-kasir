@@ -13,7 +13,7 @@ class TableSeeder extends Seeder
      */
     public function run()
     {
-        $count = (int)$this->command->ask('Mau generate berapa Meja?', 5);
+        $count = (int) $this->command->ask('Mau generate berapa Meja?', 5);
 
         $this->command->info("{$count} Meja.");
 

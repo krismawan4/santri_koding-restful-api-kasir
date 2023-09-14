@@ -13,7 +13,7 @@ class ItemFactory extends Factory
     public function definition(): array
     {
         $itemPrefixes = ['Sweater', 'Pants', 'Shirt', 'Hat', 'Glasses', 'Socks'];
-        $name = $this->faker->company . ' ' . Arr::random($itemPrefixes);
+        $name = $this->faker->company.' '.Arr::random($itemPrefixes);
 
         return [
             'category_id' => rand(1, 5),
@@ -22,7 +22,7 @@ class ItemFactory extends Factory
             'slug' => $name,
             'description' => $this->faker->realText(320),
             'price' => $this->faker->numberBetween(10000, 100000),
-            'quantity' => rand(1, 15)
+            'quantity' => rand(1, 15),
         ];
     }
 }

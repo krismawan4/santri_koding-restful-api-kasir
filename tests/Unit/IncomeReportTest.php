@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use PHPUnit\Framework\TestCase;
 
 class IncomeReportTest extends TestCase
 {

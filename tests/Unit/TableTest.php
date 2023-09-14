@@ -3,6 +3,7 @@
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\TestCase;
 
 class TableTest extends TestCase
 {
@@ -15,13 +16,13 @@ class TableTest extends TestCase
         $name = $table->name;
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)
             ->json('POST', '/api/tables', [
-            'name' => $name
-        ]);
+                'name' => $name,
+            ]);
         $slug = Str::slug($name);
 
         // Then
@@ -30,14 +31,14 @@ class TableTest extends TestCase
 
         // Confirm the data returned is the same
         $this->seeJsonContains([
-            'name'  => $table->name,
-            'slug'  => $table->slug
+            'name' => $table->name,
+            'slug' => $table->slug,
         ]);
 
         // And the database has the record
         $this->seeInDatabase('tables', [
-            'name'  => $name,
-            'slug'  => $slug,
+            'name' => $name,
+            'slug' => $slug,
         ]);
     }
 
@@ -53,21 +54,21 @@ class TableTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->json('GET', '/api/tables/' . $table->id);
+            ->json('GET', '/api/tables/'.$table->id);
 
         // Then
         $this->assertResponseOk();
 
         // Then
         $this->seeInDatabase('tables', [
-            'name'  => $table->name,
-            'slug'  => $table->slug
+            'name' => $table->name,
+            'slug' => $table->slug,
         ]);
 
         // Then
         $this->seeJsonContains([
-            'name'  => $table->name,
-            'slug'  => $table->slug
+            'name' => $table->name,
+            'slug' => $table->slug,
         ]);
     }
 
@@ -94,11 +95,11 @@ class TableTest extends TestCase
         // Given no table
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('PUT', '/api/tables/999', [
-            'name' => 'OK updated'
+            'name' => 'OK updated',
         ]);
 
         // Then
@@ -106,7 +107,7 @@ class TableTest extends TestCase
 
         // Then
         $this->seeJson([
-            'error' => 'update_error'
+            'error' => 'update_error',
         ]);
     }
 
@@ -120,15 +121,15 @@ class TableTest extends TestCase
 
         // When
         $newTable = [
-            'name'  => $table->name . '_updated',
-            'slug'  => Str::slug($table->name . '_updated'),
+            'name' => $table->name.'_updated',
+            'slug' => Str::slug($table->name.'_updated'),
         ];
 
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/tables/'. $table->id, $newTable);
+        $this->actingAs($user)->json('PUT', '/api/tables/'.$table->id, $newTable);
 
         // Then
         $this->assertResponseOk();
@@ -155,14 +156,14 @@ class TableTest extends TestCase
         // Given
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         $this->actingAs($user)->json('DELETE', '/api/tables/999');
         // Then
         $this->assertResponseStatus(404);
         $this->seeJson([
-            'error' => 'delete_error'
+            'error' => 'delete_error',
         ]);
     }
 
@@ -175,10 +176,10 @@ class TableTest extends TestCase
         $table = Table::factory()->create();
         // When
         $user = User::factory()->create([
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('DELETE', '/api/tables/' . $table->id);
+        $this->actingAs($user)->json('DELETE', '/api/tables/'.$table->id);
         // Then
         $this->assertResponseOk();
 
@@ -218,9 +219,9 @@ class TableTest extends TestCase
                 'per_page',
                 'prev_page_url',
                 'to',
-                'total'
+                'total',
             ],
-            'error'
+            'error',
         ]);
     }
 }

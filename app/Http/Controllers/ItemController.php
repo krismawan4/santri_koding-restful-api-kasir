@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Item;
-use Illuminate\Http\Response;
 use App\Utils\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ItemController extends Controller
 {
@@ -64,7 +64,7 @@ class ItemController extends Controller
                 $imageName = $image->hashName();
 
                 $store->image()->create([
-                    'url' => $imageName
+                    'url' => $imageName,
                 ]);
 
                 $image->move(storage_path('images'), $imageName);
@@ -88,7 +88,7 @@ class ItemController extends Controller
     public function show(int $id)
     {
         $item = $this->repo->with('image.imageable')->find($id);
-        if (!$item) {
+        if (! $item) {
             //return error message
             return response()->json(new JsonResponse(
                 'Data Item tidak ditemukan',
@@ -96,6 +96,7 @@ class ItemController extends Controller
                 'show_error'
             ), Response::HTTP_NOT_FOUND);
         }
+
         //return successful response
         return response()->json(new JsonResponse(
             'Show Item Berhasil',
@@ -134,11 +135,11 @@ class ItemController extends Controller
                 $imageName = $image->hashName();
 
                 $oldImage = $update->image->url;
-                $filePath = storage_path('images') . '/' . $oldImage;
+                $filePath = storage_path('images').'/'.$oldImage;
                 unlink($filePath);
 
                 $update->image()->update([
-                    'url' => $imageName
+                    'url' => $imageName,
                 ]);
 
                 $image->move(storage_path('images'), $imageName);
@@ -163,7 +164,7 @@ class ItemController extends Controller
     {
         try {
             $delete = $this->repo->find($id);
-            if (!$delete) {
+            if (! $delete) {
                 //return error message
                 return response()->json(new JsonResponse(
                     'Data Item tidak ditemukan',
@@ -174,12 +175,13 @@ class ItemController extends Controller
 
             if ($delete->image) {
                 $image = $delete->image->url;
-                $filePath = storage_path('images') . '/' . $image;
+                $filePath = storage_path('images').'/'.$image;
                 unlink($filePath);
 
                 $delete->image()->delete();
             }
             $delete->delete();
+
             //return successful response
             return response()->json(new JsonResponse(
                 'Hapus Item Berhasil',
