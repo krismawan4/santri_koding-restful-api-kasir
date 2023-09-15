@@ -15,29 +15,31 @@ class TransactionTest extends TestCase
     {
         Transaction::factory()->count(1)->create();
 
-        $user = User::factory()->create();
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)
-            ->json('GET', '/api/transactions')
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    'current_page',
-                    'data' => [],
-                    'first_page_url',
-                    'from',
-                    'last_page',
-                    'last_page_url',
-                    'links' => [],
-                    'next_page_url',
-                    'path',
-                    'per_page',
-                    'prev_page_url',
-                    'to',
-                    'total',
-                ],
-                'error',
-            ]);
+        $response = $this->actingAs($user)->json('GET', '/api/v1/transactions');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'current_page',
+                'data' => [],
+                'first_page_url',
+                'from',
+                'last_page',
+                'last_page_url',
+                'links' => [],
+                'next_page_url',
+                'path',
+                'per_page',
+                'prev_page_url',
+                'to',
+                'total',
+            ],
+            'error',
+        ]);
     }
 
     /**
@@ -48,11 +50,14 @@ class TransactionTest extends TestCase
         $table = Table::factory()->create();
         $item = Item::factory()->create();
 
-        $user = User::factory()->create([
-            'role' => 'kasir',
-        ]);
+        $user = User::find(2);
+        if (empty($user)) {
+            $user = User::factory()->create([
+                'role' => 'kasir',
+            ]);
+        }
 
-        $this->actingAs($user)->json('POST', '/api/transactions', [
+        $response = $this->actingAs($user)->json('POST', '/api/v1/transactions', [
             'table_id' => $table->id,
             'total' => (50000 * 4),
             'pay' => 200000,
@@ -69,9 +74,9 @@ class TransactionTest extends TestCase
             ],
         ]);
 
-        $this->assertResponseStatus(201);
+        $response->assertStatus(201);
 
-        $this->assertJsonStructure([
+        $response->assertJsonStructure([
             'data' => [
                 'user_id',
                 'table_id',
@@ -95,13 +100,16 @@ class TransactionTest extends TestCase
     {
         $transaction = Transaction::factory()->create();
 
-        $user = User::factory()->create();
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)->json('GET', '/api/transactions/' . $transaction->invoice);
+        $response = $this->actingAs($user)->json('GET', '/api/v1/transactions/' . $transaction->invoice);
 
-        $this->assertResponseOk();
+        $response->assertStatus(200);
 
-        $this->assertJsonStructure([
+        $response->assertJsonStructure([
             'data' => [
                 'user_id',
                 'table_id',
@@ -126,11 +134,14 @@ class TransactionTest extends TestCase
         // Given
         // Table 999 does not exist.
         // When
-        $user = User::factory()->create();
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)->json('GET', '/api/transaction/INV-999999');
+        $response = $this->actingAs($user)->json('GET', '/api/v1/transaction/INV-999999');
         // Then
-        $this->assertResponseStatus(404);
+        $response->assertStatus(404);
     }
 
     /**
@@ -160,13 +171,16 @@ class TransactionTest extends TestCase
             ],
         ];
 
-        $user = User::factory()->create([
-            'role' => 'kasir',
-        ]);
+        $user = User::find(2);
+        if (empty($user)) {
+            $user = User::factory()->create([
+                'role' => 'kasir',
+            ]);
+        }
 
-        $this->actingAs($user)->json('PUT', '/api/transactions/' . $transaction->invoice, $update);
+        $response = $this->actingAs($user)->json('PUT', '/api/v1/transactions/' . $transaction->invoice, $update);
 
         // Then
-        $this->assertResponseOk();
+        $response->assertStatus(200);
     }
 }

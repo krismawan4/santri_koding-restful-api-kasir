@@ -7,10 +7,13 @@ class IncomeReportTest extends TestCase
 {
     public function test_can_view_json_income_report()
     {
-        $user = User::factory()->create();
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)->json('GET', '/api/reports/income-report?start_date=2021-01-01&end_date=' . date('Y-m-d'));
+        $response = $this->actingAs($user)->json('GET', '/api/v1/reports/income-report?start_date=2021-01-01&end_date=' . date('Y-m-d'));
 
-        $this->assertResponseOk();
+        $response->assertStatus(200);
     }
 }

@@ -14,7 +14,7 @@ class TableFactory extends Factory
 
     public function definition(): array
     {
-        $name = 'Meja '.self::$increment++;
+        $name = 'Meja ' . self::$increment++ . Str::random(2);
 
         return [
             'name' => $name,

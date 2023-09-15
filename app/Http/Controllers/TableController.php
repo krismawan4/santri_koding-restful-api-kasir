@@ -64,7 +64,7 @@ class TableController extends Controller
     public function show(int $id)
     {
         $table = $this->repo->find($id);
-        if (! $table) {
+        if (!$table) {
             //return error message
             return response()->json(new JsonResponse(
                 'Data Meja tidak ditemukan',
@@ -115,7 +115,7 @@ class TableController extends Controller
     {
         try {
             $delete = $this->repo->find($id);
-            if (! $delete) {
+            if (!$delete) {
                 //return error message
                 return response()->json(new JsonResponse(
                     'Data Meja tidak ditemukan',

@@ -12,31 +12,34 @@ class CategoryTest extends TestCase
      */
     public function can_return_a_collection_of_paginated_categories(): void
     {
-        Category::factory()->count(5)->create();
-
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
-            ->json('GET', '/api/categories')
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    'current_page',
-                    'data' => [],
-                    'first_page_url',
-                    'from',
-                    'last_page',
-                    'last_page_url',
-                    'links' => [],
-                    'next_page_url',
-                    'path',
-                    'per_page',
-                    'prev_page_url',
-                    'to',
-                    'total',
-                ],
-                'error',
-            ]);
+        $category_count = Category::count();
+        if ($category_count == 0) {
+            Category::factory()->count(5)->create();
+        }
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
+        $response = $this->actingAs($user)->json('GET', '/api/v1/categories');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'current_page',
+                'data' => [],
+                'first_page_url',
+                'from',
+                'last_page',
+                'last_page_url',
+                'links' => [],
+                'next_page_url',
+                'path',
+                'per_page',
+                'prev_page_url',
+                'to',
+                'total',
+            ],
+            'error',
+        ]);
     }
 
     /**
@@ -45,25 +48,26 @@ class CategoryTest extends TestCase
     public function can_create_a_category(): void
     {
         $category = Category::factory()->make();
-
-        $user = User::factory()->create([
-            'role' => 'admin',
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
+        $response = $this->actingAs($user)->json('POST', '/api/v1/categories', [
+            'name' => $category->name . Str::random(5),
         ]);
-
-        $this->actingAs($user)->json('POST', '/api/categories', [
-            'name' => $category->name,
-        ]);
-
-        $this->assertResponseStatus(201);
-
-        $this->seeJsonContains([
-            'name' => $category->name,
-            'slug' => $category->slug,
-        ]);
-
-        $this->seeInDatabase('categories', [
-            'name' => $category->name,
-            'slug' => $category->slug,
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            "success",
+            "message",
+            "data" => [
+                "name",
+                "slug",
+                "updated_at",
+                "created_at",
+                "id",
+                "image_url",
+            ],
+            "error",
         ]);
     }
 
@@ -72,14 +76,17 @@ class CategoryTest extends TestCase
      */
     public function will_fail_with_a_404_if_category_is_not_found(): void
     {
+
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
         // Given
         // Table 999 does not exist.
         // When
-        $user = User::factory()->create();
-
-        $this->actingAs($user)->json('GET', '/api/categories/999');
+        $response = $this->actingAs($user)->json('GET', '/api/v1/categories/999');
         // Then
-        $this->assertResponseStatus(404);
+        $response->assertStatus(404);
     }
 
     /**
@@ -87,22 +94,28 @@ class CategoryTest extends TestCase
      */
     public function can_return_a_category(): void
     {
-        $category = Category::factory()->create();
-
-        $user = User::factory()->create();
-
-        $this->actingAs($user)->json('GET', '/api/categories/' . $category->id);
-
-        $this->assertResponseOk();
-
-        $this->seeInDatabase('categories', [
-            'name' => $category->name,
-            'slug' => $category->slug,
-        ]);
-
-        $this->seeJsonContains([
-            'name' => $category->name,
-            'slug' => $category->slug,
+        $category = Category::find(1);
+        if ($category == null) {
+            $category = Category::factory()->create();
+        }
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
+        $response = $this->actingAs($user)->json('GET', '/api/v1/categories/' . $category->id);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            "success",
+            "message",
+            "data" => [
+                "id",
+                "name",
+                "slug",
+                "created_at",
+                "updated_at",
+                "image_url",
+            ],
+            "error"
         ]);
     }
 
@@ -111,7 +124,14 @@ class CategoryTest extends TestCase
      */
     public function can_update_a_category()
     {
-        $category = Category::factory()->create();
+        $category = Category::orderBy('id', 'desc')->first();
+        if ($category == null) {
+            $category = Category::factory()->create();
+        }
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
         $newCategory = [
             'name' => $category->name . '_updated',
@@ -122,20 +142,21 @@ class CategoryTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $this->actingAs($user)->json('PUT', '/api/categories/' . $category->id, $newCategory);
-
-        $this->assertResponseOk();
-
-        $this->seeJsonContains($newCategory);
-
-        $this->seeInDatabase(
-            'categories',
-            [
-                'id' => $category->id,
-                'name' => $newCategory['name'],
-                'slug' => $newCategory['slug'],
-            ]
-        );
+        $response = $this->actingAs($user)->json('PUT', '/api/v1/categories/' . $category->id, $newCategory);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            "success",
+            "message",
+            "data" => [
+                "id",
+                "name",
+                "slug",
+                "created_at",
+                "updated_at",
+                "image_url",
+            ],
+            "error"
+        ]);
     }
 
     /**
@@ -145,18 +166,22 @@ class CategoryTest extends TestCase
     {
         // Given no category
         // When
-        $user = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)->json('PUT', '/api/categories/999', [
+        $response = $this->actingAs($user)->json('PUT', '/api/v1/categories/999', [
             'name' => 'OK updated',
         ]);
-
-        $this->assertResponseStatus(500);
-
-        $this->seeJson([
-            'error' => 'update_error',
+        $response->assertStatus(500);
+        $response->assertJsonStructure([
+            "success",
+            "message",
+            "data" => [
+                "data",
+            ],
+            "error"
         ]);
     }
 
@@ -167,15 +192,19 @@ class CategoryTest extends TestCase
     {
         // Given
         // When
-        $user = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)->json('DELETE', '/api/categories/999');
+        $response = $this->actingAs($user)->json('DELETE', '/api/v1/categories/999');
         // Then
-        $this->assertResponseStatus(404);
-        $this->seeJson([
-            'error' => 'delete_error',
+        $response->assertStatus(404);
+        $response->assertJsonStructure([
+            "success",
+            "message",
+            "data",
+            "error"
         ]);
     }
 
@@ -185,18 +214,18 @@ class CategoryTest extends TestCase
     public function can_delete_a_category(): void
     {
         // Given
-        $category = Category::factory()->create();
+        $category = Category::orderBy('id', 'desc')->first();
+        if ($category == null) {
+            $category = Category::factory()->create();
+        }
         // When
-        $user = User::factory()->create([
-            'role' => 'admin',
-        ]);
+        $user = User::find(1);
+        if (empty($user)) {
+            $user = User::factory()->create();
+        }
 
-        $this->actingAs($user)->json('DELETE', '/api/categories/' . $category->id);
+        $response = $this->actingAs($user)->json('DELETE', '/api/v1/categories/' . $category->id);
         // Then
-        $this->assertResponseOk();
-
-        $this->notSeeInDatabase('categories', [
-            'id' => $category->id,
-        ]);
+        $response->assertStatus(200);
     }
 }

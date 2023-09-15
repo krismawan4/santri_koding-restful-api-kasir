@@ -28,7 +28,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/tables', 'index');
             Route::get('/tables/{id}', 'show');
         });
-        Route::controller(TransactionController::class)->group(function () {
+        Route::controller(ItemController::class)->group(function () {
             Route::get('/items', 'index');
             Route::get('/items/{id}', 'show');
         });
@@ -66,5 +66,4 @@ Route::prefix('v1')->group(function () {
             Route::delete('/items/{id}', 'destroy');
         });
     });
-
 });
