@@ -20,7 +20,7 @@ class ItemFactory extends Factory
             'name' => $name,
             'barcode' => (int) $this->faker->ean13,
             'slug' => $name,
-            'description' => $this->faker->realText(320),
+            'description' => $this->faker->text(320),
             'price' => $this->faker->numberBetween(10000, 100000),
             'quantity' => rand(1, 15),
         ];
