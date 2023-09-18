@@ -15,10 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // return view('welcome');
-    $user = User::factory()->create();
-    dd($user->name);
-});
-Route::post('/MultindoMobile/zrestdev/Order1_1056/setSegmentNasabah', function () {
-    // return view('welcome');
+    return view('welcome');
 });
